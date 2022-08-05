@@ -1,0 +1,56 @@
+{
+  "name": "ssb-blobs-blurhash",
+  "version": "0.0.1",
+  "description": "SSB secret stack plugin to generate a blurhash hash for a provided blob",
+  "main": "index.js",
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "format": "prettier --write \"*.{js,ts}\"",
+    "format-staged": "pretty-quick --staged --pattern \"*.{js,ts}\"",
+    "lint": "tsc",
+    "prepare": "husky install",
+    "release": "standard-version",
+    "test": "tape test/*.js | tap-arc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/achou11/ssb-blobs-blurhash.git"
+  },
+  "keywords": [
+    "blurhash",
+    "ssb",
+    "blobs",
+    "secret",
+    "stack"
+  ],
+  "author": "Andrew Chou <andrewchou@fastmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/achou11/ssb-blobs-blurhash/issues"
+  },
+  "homepage": "https://github.com/achou11/ssb-blobs-blurhash#readme",
+  "files": [
+    "*.js"
+  ],
+  "devDependencies": {
+    "@types/node": "^18.6.4",
+    "husky": "^7.0.4",
+    "prettier": "^2.7.1",
+    "pretty-quick": "^3.1.3",
+    "standard-version": "^9.5.0",
+    "tap-arc": "^0.3.5",
+    "tape": "^5.5.3",
+    "typescript": "~4.7.4"
+  },
+  "dependencies": {
+    "blurhash": "^1.1.5",
+    "sharp": "^0.30.7",
+    "ssb-blobs": "^2.0.1"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  }
+}
