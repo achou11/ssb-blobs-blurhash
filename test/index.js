@@ -63,6 +63,8 @@ test('generate produces a valid blurhash hash', (t) => {
         t.error(err, 'no error generating blurhash')
         t.ok(isBlurhashValid(hash), 'valid blurhash created')
 
+        t.comment(`hash is: ${hash}`)
+
         sbot.close(true, t.end)
       })
     })
