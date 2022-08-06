@@ -30,7 +30,25 @@ function createSbot() {
   return sbot
 }
 
-test('generate', (t) => {
+test('generate with missing options throws an error', (t) => {
+  const sbot = createSbot()
+
+  t.throws(() => sbot.blobsBlurhash.generate('abc123', {}, () => {}))
+
+  sbot.close(true, t.end)
+})
+
+test('generate with non-existent blob id produces an error in callback', (t) => {
+  const sbot = createSbot()
+
+  sbot.blobsBlurhash.generate('abc123', { width: 48 }, (err, hash) => {
+    t.ok(err, 'error occurs')
+
+    sbot.close(true, t.end)
+  })
+})
+
+test('generate produces a valid blurhash hash', (t) => {
   const sbot = createSbot()
 
   const imageBuffer = loadImageFixture('square.jpg')
