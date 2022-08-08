@@ -11,6 +11,13 @@ const sharp = require('sharp')
  * @property {number} Options.width
  */
 
+/**
+ * @typedef {Object} Output
+ * @property {string} Output.hash
+ * @property {number} Output.componentX
+ * @property {number} Output.componentY
+ */
+
 const BASE_COMPONENT_SIZE = 4
 const BLURHASH_MIN_COMPONENTS = 1
 const BLURHASH_MAX_COMPONENTS = 9
@@ -38,9 +45,10 @@ function restrictComponentsSize(size) {
 /**
  * @param {Buffer} blob
  * @param {number} desiredWidth
- * @returns {Promise<string>}
+ * @param {boolean}details
+ * @returns {Promise<string | Output>}
  */
-async function createBlurhash(blob, desiredWidth) {
+async function createBlurhash(blob, desiredWidth, details = false) {
   const image = sharp(blob)
 
   const metadata = await sharp(blob).metadata()
@@ -61,17 +69,24 @@ async function createBlurhash(blob, desiredWidth) {
     )
     .toBuffer({ resolveWithObject: true })
 
+  const componentX = BASE_COMPONENT_SIZE
   const componentY = isSquare
     ? BASE_COMPONENT_SIZE
     : restrictComponentsSize(Math.round(BASE_COMPONENT_SIZE / aspectRatio))
 
-  return blurhash.encode(
+  const hash = blurhash.encode(
     new Uint8ClampedArray(data),
     info.width,
     info.height,
-    BASE_COMPONENT_SIZE,
+    componentX,
     componentY
   )
+
+  if (details) {
+    return { hash, componentX, componentY }
+  } else {
+    return hash
+  }
 }
 
 module.exports = {
@@ -86,7 +101,7 @@ module.exports = {
    */
   init(ssb) {
     /**
-     * Get the storage capacity used for a specfic feed id
+     * Calculate the blurhash of an image known by its blobId.
      * @param {string} blobId
      * @param {Options} opts
      * @param {import('./types/helpers').CB<*>} cb
@@ -102,7 +117,7 @@ module.exports = {
 
           const buffer = Buffer.concat(blobs)
 
-          createBlurhash(buffer, opts.width)
+          createBlurhash(buffer, opts.width, opts.details)
             .then((hash) => {
               cb(null, hash)
             })

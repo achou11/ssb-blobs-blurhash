@@ -59,14 +59,80 @@ test('generate produces a valid blurhash hash', (t) => {
       t.error(err, 'no error adding blob')
       t.ok(blobId, 'blob id created')
 
-      sbot.blobsBlurhash.generate(blobId, { width: 48 }, (err, hash) => {
-        t.error(err, 'no error generating blurhash')
-        t.ok(isBlurhashValid(hash), 'valid blurhash created')
+      sbot.blobsBlurhash.generate(
+        blobId,
+        { width: 48, details: true },
+        (err, output) => {
+          t.error(err, 'no error generating blurhash')
+          const { hash, componentX, componentY } = output
+          t.ok(isBlurhashValid(hash), 'valid blurhash created')
+          t.equal(componentX, 4, 'correct componentX')
+          t.equal(componentY, 4, 'correct componentY')
+          t.equal(hash, 'UELpw400_3_2+G?Ht7t7]l~qD%D%D4jGtRM_', 'correct hash')
 
-        t.comment(`hash is: ${hash}`)
+          sbot.close(true, t.end)
+        }
+      )
+    })
+  )
+})
 
-        sbot.close(true, t.end)
-      })
+test('generate handles horizontal rectangle', (t) => {
+  const sbot = createSbot()
+
+  const imageBuffer = loadImageFixture('hnature.jpg')
+
+  pull(
+    pull.once(imageBuffer),
+    sbot.blobs.add((err, blobId) => {
+      sbot.blobsBlurhash.generate(
+        blobId,
+        { width: 48, details: true },
+        (err, output) => {
+          t.error(err, 'no error generating blurhash')
+          const { hash, componentX, componentY } = output
+          t.ok(isBlurhashValid(hash), 'valid blurhash created')
+          t.equal(componentX, 6, 'correct componentX')
+          t.equal(componentY, 4, 'correct componentY')
+          t.equal(
+            hash,
+            'W:IE;QRPRltRkCjZ?dR*bHogj[jsI?o#oeV@WBoLRjbJaeWAWBoe',
+            'correct hash'
+          )
+
+          sbot.close(true, t.end)
+        }
+      )
+    })
+  )
+})
+
+test('generate handles vertical rectangle', (t) => {
+  const sbot = createSbot()
+
+  const imageBuffer = loadImageFixture('vnature.jpg')
+
+  pull(
+    pull.once(imageBuffer),
+    sbot.blobs.add((err, blobId) => {
+      sbot.blobsBlurhash.generate(
+        blobId,
+        { width: 48, details: true },
+        (err, output) => {
+          t.error(err, 'no error generating blurhash')
+          const { hash, componentX, componentY } = output
+          t.ok(isBlurhashValid(hash), 'valid blurhash created')
+          t.equal(componentX, 4, 'correct componentX')
+          t.equal(componentY, 6, 'correct componentY')
+          t.equal(
+            hash,
+            'mbENCvXBH=od_4afX9o#^+R*S5of.9R+RPof$_WBkDWV-.WCRkae',
+            'correct hash'
+          )
+
+          sbot.close(true, t.end)
+        }
+      )
     })
   )
 })
