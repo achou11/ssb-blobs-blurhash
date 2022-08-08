@@ -1,6 +1,6 @@
 {
   "name": "ssb-blobs-blurhash",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "SSB secret stack plugin to generate a blurhash hash for a provided blob",
   "main": "index.js",
   "engines": {
