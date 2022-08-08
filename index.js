@@ -9,6 +9,7 @@ const sharp = require('sharp')
 /**
  * @typedef {Object} Options
  * @property {number} Options.width
+ * @property {boolean} Options.details
  */
 
 /**
@@ -60,19 +61,27 @@ async function createBlurhash(blob, desiredWidth, details = false) {
 
   const isSquare = isSquareEnough(aspectRatio)
 
+  const resizedHeight = isSquare
+    ? desiredWidth
+    : Math.round(desiredWidth / aspectRatio)
+
   const { data, info } = await image
     .raw()
     .ensureAlpha()
-    .resize(
-      desiredWidth,
-      isSquare ? desiredWidth : Math.round(desiredWidth / aspectRatio)
-    )
+    .resize(desiredWidth, resizedHeight)
     .toBuffer({ resolveWithObject: true })
 
-  const componentX = BASE_COMPONENT_SIZE
-  const componentY = isSquare
+  const otherComponentSize = isSquare
     ? BASE_COMPONENT_SIZE
-    : restrictComponentsSize(Math.round(BASE_COMPONENT_SIZE / aspectRatio))
+    : restrictComponentsSize(
+        Math.round(
+          aspectRatio < 1
+            ? BASE_COMPONENT_SIZE / aspectRatio
+            : BASE_COMPONENT_SIZE * aspectRatio
+        )
+      )
+  const componentX = aspectRatio < 1 ? BASE_COMPONENT_SIZE : otherComponentSize
+  const componentY = aspectRatio < 1 ? otherComponentSize : BASE_COMPONENT_SIZE
 
   const hash = blurhash.encode(
     new Uint8ClampedArray(data),
