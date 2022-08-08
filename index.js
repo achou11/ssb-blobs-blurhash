@@ -46,7 +46,7 @@ function restrictComponentsSize(size) {
 /**
  * @param {Buffer} blob
  * @param {number} desiredWidth
- * @param {boolean}details
+ * @param {boolean} details
  * @returns {Promise<string | Output>}
  */
 async function createBlurhash(blob, desiredWidth, details = false) {
