@@ -1,6 +1,6 @@
 const pull = require('pull-stream')
 const blurhash = require('blurhash')
-const sharp = require('sharp')
+const jimp = require('jimp')
 
 /**
  * @typedef {import('./types/helpers').SSB} SSB
@@ -50,14 +50,9 @@ function restrictComponentsSize(size) {
  * @returns {Promise<string | Output>}
  */
 async function createBlurhash(blob, desiredWidth, details = false) {
-  const image = sharp(blob)
+  const image = await jimp.read(blob)
 
-  const metadata = await sharp(blob).metadata()
-
-  if (!(metadata.width && metadata.height))
-    throw new Error('Could not determine height and width of image')
-
-  const aspectRatio = metadata.width / metadata.height
+  const aspectRatio = image.bitmap.width / image.bitmap.height
 
   const isSquare = isSquareEnough(aspectRatio)
 
@@ -65,11 +60,8 @@ async function createBlurhash(blob, desiredWidth, details = false) {
     ? desiredWidth
     : Math.round(desiredWidth / aspectRatio)
 
-  const { data, info } = await image
-    .raw()
-    .ensureAlpha()
-    .resize(desiredWidth, resizedHeight)
-    .toBuffer({ resolveWithObject: true })
+  image.resize(desiredWidth, resizedHeight)
+  const data = image.bitmap.data
 
   const otherComponentSize = isSquare
     ? BASE_COMPONENT_SIZE
@@ -85,8 +77,8 @@ async function createBlurhash(blob, desiredWidth, details = false) {
 
   const hash = blurhash.encode(
     new Uint8ClampedArray(data),
-    info.width,
-    info.height,
+    desiredWidth,
+    resizedHeight,
     componentX,
     componentY
   )

@@ -68,7 +68,7 @@ test('generate produces a valid blurhash hash', (t) => {
           t.ok(isBlurhashValid(hash), 'valid blurhash created')
           t.equal(componentX, 4, 'correct componentX')
           t.equal(componentY, 4, 'correct componentY')
-          t.equal(hash, 'UELpw400_3_2+G?Ht7t7]l~qD%D%D4jGtRM_', 'correct hash')
+          t.equal(hash, 'UEL:=p00~q~q:*?Hx]t7;2_39Y8_HXV@x]M_', 'correct hash')
 
           sbot.close(true, t.end)
         }
@@ -96,7 +96,7 @@ test('generate handles horizontal rectangle', (t) => {
           t.equal(componentY, 4, 'correct componentY')
           t.equal(
             hash,
-            'W:IE;QRPRltRkCjZ?dR*bHogj[jsI?o#oeV@WBoLRjbJaeWAWBoe',
+            'W:I5PqRPRltRofjs?dR*bHogj[jsNKo#oeV@WBoLRjbJaeWAWBoe',
             'correct hash'
           )
 
@@ -126,7 +126,7 @@ test('generate handles vertical rectangle', (t) => {
           t.equal(componentY, 6, 'correct componentY')
           t.equal(
             hash,
-            'mbENCvXBH=od_4afX9o#^+R*S5of.9R+RPof$_WBkDWV-.WCRkae',
+            'mbEN9nXBH=oc_4afX9o#^+R*S5of.9R+RPof$_WBf,WV-.WCRkae',
             'correct hash'
           )
 

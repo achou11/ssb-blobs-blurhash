@@ -58,7 +58,7 @@
   "dependencies": {
     "blurhash": "^1.1.5",
     "pull-stream": "^3.6.14",
-    "sharp": "^0.30.7"
+    "jimp": "0.16.1"
   },
   "prettier": {
     "semi": false,
